@@ -11,8 +11,10 @@ from sse_starlette.sse import EventSourceResponse
 import json
 import uuid
 from app.core.events import get_book_update_queue, remove_client, send_book_update
-
+import logging
 router = APIRouter()
+
+logger = logging.getLogger(__name__)
 
 @router.get("/stream")
 async def stream_book_updates(
@@ -44,31 +46,6 @@ async def stream_book_updates(
             await remove_client(client_id, background_tasks)
 
     return EventSourceResponse(event_generator())
-
-# @router.get("/stream")
-# async def stream_book_updates(
-#     background_tasks: BackgroundTasks,
-#     current_user: User = Depends(get_current_user)
-# ):
-#     client_id = str(uuid.uuid4())
-    
-#     async def event_generator():
-#         queue = await get_book_update_queue(client_id)
-#         try:
-#             while True:
-#                 message = await queue.get()
-#                 if message is None:
-#                     break
-#                 yield {
-#                     "event": message["event"],
-#                     "data": json.dumps(message)
-#                 }
-#         except Exception:
-#             pass
-#         finally:
-#             await remove_client(client_id, background_tasks)
-
-#     return EventSourceResponse(event_generator())
 
 @router.post("/", response_model=BookSchema)
 async def create_book(
@@ -114,17 +91,26 @@ def get_books(
 ):
     items_per_page = 50
     total = db.query(Book).count()
+    logger.info(f"Total books in DB: {total}")
+    
     total_pages = (total + items_per_page - 1) // items_per_page
+    logger.info(f"Total pages: {total_pages}")
     
     skip = (page - 1) * items_per_page
-    books = db.query(Book).offset(skip).limit(items_per_page).all()
+    logger.info(f"Skipping {skip} items")
     
-    return {
+    books = db.query(Book).offset(skip).limit(items_per_page).all()
+    logger.info(f"Retrieved {len(books)} books")
+    
+    result = {
         "total": total,
         "items": books,
         "page": page,
         "pages": total_pages
     }
+    logger.info(f"Result length: {len(result['items'])}")
+    
+    return result
 
 @router.put("/{book_id}", response_model=BookSchema)
 async def update_book(

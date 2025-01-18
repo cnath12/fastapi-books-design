@@ -16,8 +16,7 @@ async def health_check():
 @router.get("/health/database")
 async def database_health_check(db: Session = Depends(get_db)):
     try:
-        # Execute a simple query to check database connection
-        db.execute(text("SELECT 1")).scalar()  # Use scalar() to get the result
+        db.execute(text("SELECT 1")).scalar()  
         return {
             "status": "healthy",
             "service": "database",
