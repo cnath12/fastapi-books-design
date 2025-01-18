@@ -11,20 +11,28 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="""
-    Books API with JWT Authentication and CRUD Operations.
+    # 📚 Books API Documentation
     
-    ## Features
-    * User authentication with JWT
-    * CRUD operations for books
-    * Real-time updates using Server-Sent Events
-    * Health monitoring endpoints
-    * Pagination support
+    A comprehensive RESTful API for book management with authentication and real-time updates.
+    
+    ## Key Features
+    * **🔐 Authentication**: JWT-based authentication with refresh mechanism
+    * **📖 Books Management**: Complete CRUD operations with pagination
+    * **🔄 Real-time Updates**: Server-Sent Events for live notifications
+    * **🏥 Health Checks**: API and database monitoring
     
     ## Authentication
-    All book operations require a valid JWT token. To get started:
-    1. Register a new user
-    2. Login to get your token
-    3. Use the token in the Authorize button above
+    All protected endpoints require a Bearer token:
+    1. Register a new user (`/auth/register`)
+    2. Login to get your token (`/auth/login`)
+    3. Use the token in the Authorize button above ⬆️
+    4. Refresh token when needed (`/auth/refresh-token`)
+    
+    ## Pagination
+    Book listing supports pagination:
+    - Default page size: 50 items
+    - Use `page` parameter to navigate
+    - Response includes total count and pages
     """,
     version="1.0.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json",

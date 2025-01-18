@@ -139,19 +139,46 @@ heroku config:set ACCESS_TOKEN_EXPIRE_DAYS=7
 git push heroku main
 ```
 
+
+### 5. Database Setup
+
+#### Option A: Use Included Sample Database
+This repository includes a pre-populated SQLite database (`app/db/books.db`) with 500 sample books for immediate testing and development. The database is located at:
+fastapi-books-design/
+└── app/
+└── db/
+└── books.db
+
+The sample database is included for ease of getting started and development purposes.
+
 ## Future Enhancements
 
-### Database
-- Migrate to PostgreSQL for production
-- Implement database migration support
+### 1. Database Improvements
+- Implement Alembic migrations for schema management
+- Migration to PostgreSQL for production scaling
+- Database seeding scripts and data validation
+- Backup and restore procedures
+- Encrypted connections and security audits
+- Connection pooling for concurrent access
 
-### Authentication
-- Add email verification
-- Implement password reset functionality
-- Develop role-based access control
+### 2. Authentication & Security
+- Email verification system
+- Password reset functionality
+- Role-based access control (RBAC)
+- Enhanced access control mechanisms
+- Regular security audits
 
-### API Features
-- Advanced search and filtering
-- Support bulk operations
-- Implement rate limiting
-- Add API versioning
+### 3. API Features & Performance
+- Advanced search and filtering capabilities
+- Bulk operations support
+- Rate limiting implementation
+- API versioning
+- Performance monitoring and optimization
+- Caching mechanisms
+
+### 4. Developer Experience
+- Comprehensive API documentation
+- Integration test suite expansion
+- CI/CD pipeline improvements
+- Development environment containerization
+- API client SDK generation

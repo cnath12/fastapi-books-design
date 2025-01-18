@@ -12,11 +12,13 @@ import json
 import uuid
 from app.core.events import get_book_update_queue, remove_client, send_book_update
 import logging
-router = APIRouter()
 
+router = APIRouter()
 logger = logging.getLogger(__name__)
 
-@router.get("/stream")
+@router.get("/stream", 
+    summary="Stream book updates",
+    description="SSE endpoint for real-time book updates")
 async def stream_book_updates(
     background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user)
@@ -29,7 +31,10 @@ async def stream_book_updates(
             # Send initial connection event
             yield {
                 "event": "connected",
-                "data": json.dumps({"status": "connected", "client_id": client_id})
+                "data": json.dumps({
+                    "status": "connected", 
+                    "client_id": client_id
+                })
             }
             
             while True:
@@ -44,10 +49,13 @@ async def stream_book_updates(
             pass
         finally:
             await remove_client(client_id, background_tasks)
-
+    
     return EventSourceResponse(event_generator())
 
-@router.post("/", response_model=BookSchema)
+@router.post("/", 
+    response_model=BookSchema,
+    summary="Create a new book",
+    description="Create a new book in the database")
 async def create_book(
     book: BookCreate,
     current_user: User = Depends(get_current_user),
@@ -58,7 +66,6 @@ async def create_book(
     db.commit()
     db.refresh(db_book)
     
-    # Create a clean dict of book data
     book_data = {
         "id": db_book.id,
         "title": db_book.title,
@@ -72,7 +79,10 @@ async def create_book(
     await send_book_update("created", db_book.id, book_data)
     return db_book
 
-@router.get("/{book_id}", response_model=BookSchema)
+@router.get("/{book_id}", 
+    response_model=BookSchema,
+    summary="Get a specific book",
+    description="Retrieve a book by its ID")
 def get_book(
     book_id: int,
     current_user: User = Depends(get_current_user),
@@ -83,9 +93,12 @@ def get_book(
         raise NotFoundError("Book")
     return db_book
 
-@router.get("/", response_model=PaginatedBooks)
+@router.get("/", 
+    response_model=PaginatedBooks,
+    summary="Get all books",
+    description="Retrieve all books with pagination support")
 def get_books(
-    page: int = Query(1, ge=1),
+    page: int = Query(1, ge=1, description="Page number for pagination"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -109,10 +122,12 @@ def get_books(
         "pages": total_pages
     }
     logger.info(f"Result length: {len(result['items'])}")
-    
     return result
 
-@router.put("/{book_id}", response_model=BookSchema)
+@router.put("/{book_id}", 
+    response_model=BookSchema,
+    summary="Update a book",
+    description="Update an existing book's details")
 async def update_book(
     book_id: int,
     book: BookCreate,
@@ -133,7 +148,9 @@ async def update_book(
     await send_book_update("updated", db_book.id, db_book.__dict__)
     return db_book
 
-@router.delete("/{book_id}")
+@router.delete("/{book_id}",
+    summary="Delete a book",
+    description="Delete a book from the database")
 async def delete_book(
     book_id: int,
     current_user: User = Depends(get_current_user),
