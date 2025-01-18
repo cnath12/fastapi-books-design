@@ -34,7 +34,7 @@ A comprehensive RESTful API for book management, built with FastAPI, featuring r
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/cnath12/fastapi-books-design.git
 cd fastapi-books-design
 ```
 
@@ -142,26 +142,16 @@ git push heroku main
 ## Future Enhancements
 
 ### Database
-- [ ] Migrate to PostgreSQL for production
-- [ ] Implement database migration support
+- Migrate to PostgreSQL for production
+- Implement database migration support
 
 ### Authentication
-- [ ] Add email verification
-- [ ] Implement password reset functionality
-- [ ] Develop role-based access control
+- Add email verification
+- Implement password reset functionality
+- Develop role-based access control
 
 ### API Features
-- [ ] Advanced search and filtering
-- [ ] Support bulk operations
-- [ ] Implement rate limiting
-- [ ] Add API versioning
-
-### Testing
-- [ ] Increase test coverage
-- [ ] Add integration tests for SSE
-- Perform load testing
-
-### Documentation
-- Create API usage examples
-- Develop Postman collection
-- Generate client SDK
+- Advanced search and filtering
+- Support bulk operations
+- Implement rate limiting
+- Add API versioning
